@@ -1,6 +1,9 @@
 # Full-Stack Web Application
 
-A modern full-stack web application built with React, Node.js, PostgreSQL, and Docker.
+[![CI Pipeline](https://github.com/trismus/WebApp/workflows/CI%20Pipeline/badge.svg)](https://github.com/trismus/WebApp/actions)
+[![CD Pipeline](https://github.com/trismus/WebApp/workflows/CD%20Pipeline/badge.svg)](https://github.com/trismus/WebApp/actions)
+
+A modern full-stack web application built with React, Node.js, PostgreSQL, and Docker with automated CI/CD pipeline.
 
 ## Features
 
@@ -9,6 +12,8 @@ A modern full-stack web application built with React, Node.js, PostgreSQL, and D
 - **Database**: PostgreSQL database with proper schema design
 - **Responsive UI**: Modern, responsive frontend built with React
 - **Docker Ready**: Complete Docker setup for easy deployment
+- **CI/CD Pipeline**: Automated testing, building, and deployment with GitHub Actions
+- **Production Ready**: Nginx reverse proxy, SSL support, and health checks
 - **Landing Page**: Beautiful landing page with feature showcase
 
 ## Tech Stack
@@ -29,6 +34,9 @@ A modern full-stack web application built with React, Node.js, PostgreSQL, and D
 ### DevOps
 - Docker & Docker Compose
 - Multi-container setup (Frontend, Backend, Database)
+- GitHub Actions CI/CD
+- Nginx reverse proxy
+- Automated testing and deployment
 
 ## Getting Started
 
@@ -206,6 +214,51 @@ curl http://localhost:5000/api/auth/me \
 | `JWT_EXPIRE` | Token expiration time | `7d` |
 | `REACT_APP_API_URL` | API URL for frontend | `http://localhost:5000/api` |
 
+## CI/CD Pipeline
+
+This project includes automated CI/CD pipelines using GitHub Actions:
+
+### Continuous Integration (CI)
+- Automated testing on every push and pull request
+- Backend and frontend tests with PostgreSQL service
+- Docker image building and validation
+- Full stack integration testing
+
+### Continuous Deployment (CD)
+- Automatic deployment to production on master/main branch
+- Docker images pushed to GitHub Container Registry
+- Zero-downtime deployments
+- Automatic rollback on failure
+
+### Getting Started with CI/CD
+
+1. **Automatic Testing**: Push code to trigger automated tests
+2. **View Pipeline**: Check Actions tab in GitHub repository
+3. **Deploy to Production**: See [docs/CICD.md](docs/CICD.md) for deployment setup
+
+For detailed CI/CD documentation, see **[docs/CICD.md](docs/CICD.md)**
+
+## Production Deployment
+
+### Quick Production Setup
+
+1. **On your server:**
+```bash
+mkdir -p /opt/webapp
+cd /opt/webapp
+git clone https://github.com/trismus/WebApp.git .
+cp .env.production.example .env
+# Edit .env with secure production values
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+2. **Configure GitHub Secrets** for automatic deployment:
+   - `SSH_HOST` - Your server IP/hostname
+   - `SSH_USER` - SSH username
+   - `SSH_PRIVATE_KEY` - SSH private key
+
+See [docs/CICD.md](docs/CICD.md) for complete deployment instructions.
+
 ## Troubleshooting
 
 ### Containers won't start
@@ -222,6 +275,17 @@ npm run dev:build
 ### Frontend can't connect to backend
 - Verify backend is running: `docker logs webapp_backend`
 - Check REACT_APP_API_URL in .env
+
+### CI/CD Pipeline Issues
+- Check GitHub Actions logs
+- Verify secrets are configured correctly
+- See [docs/CICD.md](docs/CICD.md) for troubleshooting
+
+## Documentation
+
+- [CI/CD Pipeline Documentation](docs/CICD.md) - Complete CI/CD setup and deployment guide
+- [API Documentation](#api-endpoints) - API endpoint reference
+- [Environment Variables](#environment-variables) - Configuration options
 
 ## License
 
