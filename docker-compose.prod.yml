@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - postgres_data_prod:/var/lib/postgresql/data
+      - ./PostgreData:/var/lib/postgresql/data
       - ./database/init:/docker-entrypoint-initdb.d
     networks:
       - webapp-network
@@ -72,7 +72,3 @@ services:
 networks:
   webapp-network:
     driver: bridge
-
-volumes:
-  postgres_data_prod:
-    driver: local

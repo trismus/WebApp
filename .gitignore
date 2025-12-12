@@ -43,6 +43,7 @@ docker-compose.override.yml
 *.db
 *.sqlite
 pgdata/
+PostgreData/
 
 # SSL Certificates
 nginx/ssl/
