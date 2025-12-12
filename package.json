@@ -1,0 +1,19 @@
+{
+  "name": "fullstack-webapp",
+  "version": "1.0.0",
+  "description": "Full-stack web application with React, Node.js, PostgreSQL, and Docker",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "docker-compose up",
+    "dev:build": "docker-compose up --build",
+    "down": "docker-compose down",
+    "clean": "docker-compose down -v"
+  },
+  "keywords": ["react", "nodejs", "postgresql", "docker", "fullstack"],
+  "author": "",
+  "license": "MIT"
+}
