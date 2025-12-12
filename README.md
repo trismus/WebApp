@@ -67,8 +67,10 @@ npm run dev:build
 ```
 
 This will build and start all containers:
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:5000
+- **Application**: http://localhost (Port 80)
+- **Application (HTTPS)**: https://localhost (Port 443)
+- Backend API: Internal only (proxied through Nginx)
+- Frontend: Internal only (proxied through Nginx)
 - PostgreSQL: localhost:5432
 
 ### First Run
@@ -76,9 +78,11 @@ This will build and start all containers:
 The database will be automatically initialized with:
 - Users table with proper schema
 - Indexes for performance
-- A test user account (optional to use):
-  - Email: `test@example.com`
-  - Password: `password123`
+- Test user accounts (optional to use):
+  - Email: `test@example.com` / Password: `password123`
+  - Email: `demo@example.com` / Password: `password123`
+
+**Note**: Database files are stored in `./PostgreData/data/` for easy backup and portability.
 
 ## Usage
 
@@ -98,7 +102,19 @@ npm run down
 npm run clean
 ```
 
+### Access Points
+
+**Web Application**:
+- HTTP: http://localhost
+- HTTPS: https://localhost (self-signed certificate)
+
+**Health Check**:
+- http://localhost/health
+- http://localhost/api/health
+
 ### API Endpoints
+
+All API requests are proxied through Nginx and accessible via `/api/*`
 
 #### Public Endpoints
 - `GET /` - API information
@@ -145,7 +161,14 @@ BaseWebApp/
 ├── database/
 │   └── init/
 │       └── 01-init.sql     # Database initialization
-├── docker-compose.yml
+├── nginx/
+│   ├── nginx.dev.conf      # Nginx config for development
+│   ├── nginx.conf          # Nginx config for production
+│   └── ssl/                # SSL certificates (gitignored)
+├── PostgreData/
+│   └── data/               # PostgreSQL data directory (gitignored)
+├── docker-compose.yml      # Development setup
+├── docker-compose.prod.yml # Production setup
 ├── .env.example
 ├── .gitignore
 └── README.md
@@ -174,21 +197,21 @@ You can test the API using curl or tools like Postman:
 
 ### Register a new user:
 ```bash
-curl -X POST http://localhost:5000/api/auth/register \
+curl -X POST http://localhost/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{"name":"John Doe","email":"john@example.com","password":"password123"}'
 ```
 
 ### Login:
 ```bash
-curl -X POST http://localhost:5000/api/auth/login \
+curl -X POST http://localhost/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"john@example.com","password":"password123"}'
 ```
 
 ### Get current user (with token):
 ```bash
-curl http://localhost:5000/api/auth/me \
+curl http://localhost/api/auth/me \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
@@ -212,7 +235,7 @@ curl http://localhost:5000/api/auth/me \
 | `DATABASE_URL` | Full database URL | (auto-generated) |
 | `JWT_SECRET` | Secret for JWT signing | (change in production) |
 | `JWT_EXPIRE` | Token expiration time | `7d` |
-| `REACT_APP_API_URL` | API URL for frontend | `http://localhost:5000/api` |
+| `REACT_APP_API_URL` | API URL for frontend | `/api` (relative, proxied through Nginx) |
 
 ## CI/CD Pipeline
 

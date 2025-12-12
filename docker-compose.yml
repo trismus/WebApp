@@ -11,7 +11,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./PostgreData:/var/lib/postgresql/data
+      - ./PostgreData/data:/var/lib/postgresql/data
       - ./database/init:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-webapp_user}"]
@@ -24,8 +24,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: webapp_backend
-    ports:
-      - "5000:5000"
+    expose:
+      - "5000"
     environment:
       NODE_ENV: ${NODE_ENV:-development}
       PORT: 5000
@@ -45,10 +45,10 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: webapp_frontend
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     environment:
-      REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:5000/api}
+      REACT_APP_API_URL: ${REACT_APP_API_URL:-/api}
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -56,3 +56,17 @@ services:
       - backend
     stdin_open: true
     tty: true
+
+  nginx:
+    image: nginx:alpine
+    container_name: webapp_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - frontend
+      - backend
+    restart: unless-stopped
