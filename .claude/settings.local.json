@@ -14,7 +14,11 @@
       "Bash(docker logs:*)",
       "Bash(docker exec:*)",
       "Bash(python -m json.tool:*)",
-      "Bash(openssl req:*)"
+      "Bash(openssl req:*)",
+      "Bash(echo:*)",
+      "Bash(cat:*)",
+      "Bash(docker-compose restart:*)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsImlhdCI6MTc2NTU0MTg1MSwiZXhwIjoxNzY2MTQ2NjUxfQ.BPrWvnA_vKd329SuXVvou9ba7sCPw2a_jCdjYE0yrPk\")"
     ]
   }
 }

@@ -30,6 +30,28 @@ export const authAPI = {
   getMe: () => api.get('/auth/me'),
 };
 
+// Settings endpoints
+export const settingsAPI = {
+  getSettings: () => api.get('/settings'),
+  updateSettings: (data) => api.put('/settings', data),
+  getSystemSettings: () => api.get('/settings/system'),
+};
+
+// Activity endpoints
+export const activityAPI = {
+  getMyActivity: (params) => api.get('/activity/me', { params }),
+  getAllActivity: (params) => api.get('/activity/all', { params }),
+  getActivityStats: () => api.get('/activity/stats'),
+};
+
+// Analytics endpoints
+export const analyticsAPI = {
+  getMyAnalytics: () => api.get('/analytics/me'),
+  getOperatorAnalytics: () => api.get('/analytics/operator'),
+  getSystemAnalytics: () => api.get('/analytics/system'),
+  refreshAnalytics: () => api.post('/analytics/refresh'),
+};
+
 // Health check
 export const healthCheck = () => api.get('/health');
 

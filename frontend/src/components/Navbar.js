@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import RoleBadge from './RoleBadge';
 import '../styles/Navbar.css';
 
 const Navbar = () => {
@@ -21,9 +22,20 @@ const Navbar = () => {
         <div className="nav-menu">
           {isAuthenticated ? (
             <>
-              <span className="nav-user">Welcome, {user?.name}</span>
+              <span className="nav-user">
+                Welcome, {user?.name} <RoleBadge role={user?.role} />
+              </span>
               <Link to="/dashboard" className="nav-link">
                 Dashboard
+              </Link>
+              <Link to="/analytics" className="nav-link">
+                Analytics
+              </Link>
+              <Link to="/activity" className="nav-link">
+                Activity
+              </Link>
+              <Link to="/settings" className="nav-link">
+                Settings
               </Link>
               <button onClick={handleLogout} className="nav-button">
                 Logout

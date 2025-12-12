@@ -47,6 +47,36 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  // Role hierarchy levels
+  const ROLE_LEVELS = {
+    user: 1,
+    operator: 2,
+    administrator: 3
+  };
+
+  // Check if user has a specific role or higher (hierarchical)
+  const hasRole = (requiredRole) => {
+    if (!user || !user.role) return false;
+    const userLevel = ROLE_LEVELS[user.role] || 0;
+    const requiredLevel = ROLE_LEVELS[requiredRole] || 0;
+    return userLevel >= requiredLevel;
+  };
+
+  // Check if user is administrator
+  const isAdmin = () => {
+    return user?.role === 'administrator';
+  };
+
+  // Check if user is operator or higher
+  const isOperator = () => {
+    return hasRole('operator');
+  };
+
+  // Check if user is authenticated (any role)
+  const isUser = () => {
+    return !!user;
+  };
+
   const value = {
     user,
     login,
@@ -54,6 +84,10 @@ export const AuthProvider = ({ children }) => {
     logout,
     loading,
     isAuthenticated: !!user,
+    hasRole,
+    isAdmin,
+    isOperator,
+    isUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

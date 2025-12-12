@@ -5,6 +5,9 @@ import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
+import SettingsPage from './pages/SettingsPage';
+import ActivityPage from './pages/ActivityPage';
+import AnalyticsPage from './pages/AnalyticsPage';
 import PrivateRoute from './components/PrivateRoute';
 import './styles/App.css';
 
@@ -21,6 +24,30 @@ function App() {
             element={
               <PrivateRoute>
                 <DashboardPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <PrivateRoute>
+                <SettingsPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/activity"
+            element={
+              <PrivateRoute>
+                <ActivityPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/analytics"
+            element={
+              <PrivateRoute>
+                <AnalyticsPage />
               </PrivateRoute>
             }
           />

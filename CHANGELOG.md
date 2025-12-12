@@ -2,6 +2,95 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2025-12-12
+
+### Added - User Management System
+- **Three-Tier Role System**: Hierarchical role-based access control (Administrator > Operator > User)
+- **Interactive Dashboard**: Real-time statistics dashboard with quick actions and role badges
+- **User Settings Module**: Complete settings management with theme, language, notifications, and timezone preferences
+- **Activity Tracking System**: Comprehensive audit logging of all user actions with IP tracking and user agent information
+- **Analytics Platform**: Multi-level analytics with personal, operator, and system-wide views
+- **Role Badges**: Visual role indicators throughout the application
+- **Protected Routes**: Role-based route protection for frontend pages
+
+### Database Enhancements
+- Added `role` column to users table with CHECK constraint (administrator, operator, user)
+- Created `user_settings` table for user preferences
+- Created `activity_logs` table for complete audit trail
+- Created `analytics_events` table for event tracking
+- Implemented `user_analytics_summary` materialized view for performance
+- Added automatic triggers for timestamp updates
+- Implemented cascading deletes for data integrity
+- Created optimized indexes for all new tables
+
+### Backend Features
+- **New Middleware**:
+  - `roleCheck.js` - Hierarchical role checking with helper functions
+  - `activityLogger.js` - Automatic activity logging for all actions
+  - Updated `auth.js` - Now includes role information in authentication
+- **New Controllers**:
+  - `settingsController.js` - User settings and system settings management
+  - `activityController.js` - Activity logs and statistics
+  - `analyticsController.js` - Multi-view analytics (personal, operator, system)
+  - Updated `authController.js` - Role support in registration and login
+- **New API Endpoints**:
+  - `/api/settings` - GET/PUT user settings
+  - `/api/settings/system` - GET system settings (Admin only)
+  - `/api/activity/me` - GET personal activity logs
+  - `/api/activity/all` - GET all activity logs (Operator+)
+  - `/api/activity/stats` - GET activity statistics
+  - `/api/analytics/me` - GET personal analytics
+  - `/api/analytics/operator` - GET operator analytics (Operator+)
+  - `/api/analytics/system` - GET system analytics (Admin only)
+  - `/api/analytics/refresh` - POST refresh analytics (Admin only)
+
+### Frontend Features
+- **New Pages**:
+  - `SettingsPage` - User settings with account and system tabs
+  - `ActivityPage` - Activity logs with personal/all view toggle
+  - `AnalyticsPage` - Analytics with personal/operator/system views
+- **Enhanced Dashboard**:
+  - Real-time statistics from API
+  - Quick stats overview (activities, logins, active days, events)
+  - Clickable navigation cards with gradient hover effects
+  - Quick actions section for common tasks
+  - Role badge in profile section
+  - Last activity timestamp
+- **New Components**:
+  - `RoleBadge` - Color-coded role badges (purple for Admin, pink for Operator, blue for User)
+  - `RoleRoute` - Protected route component with role checking
+- **Updated Components**:
+  - `Navbar` - Added role badge, Analytics, Activity, and Settings links
+  - `useAuth` - Added role helper functions (hasRole, isAdmin, isOperator, isUser)
+  - `api.js` - Added all new API endpoints
+
+### Styling Improvements
+- New CSS files: `RoleBadge.css`, `SettingsPage.css`, `ActivityPage.css`, `AnalyticsPage.css`
+- Updated `Dashboard.css` with clickable cards, quick stats, and quick actions
+- Gradient backgrounds and hover effects throughout
+- Fully responsive design for mobile devices
+- Smooth transitions and animations
+
+### Security Enhancements
+- Role-based access control at both API and UI levels
+- Activity logging includes IP addresses for security auditing
+- Hierarchical permission system prevents privilege escalation
+- Protected endpoints verify user roles before granting access
+
+### Performance Optimizations
+- Materialized views for fast analytics queries
+- Optimized database indexes on all new tables
+- Parallel API calls for dashboard statistics
+- Efficient query patterns for large datasets
+
+### Documentation
+- Updated README with user management system documentation
+- Added database schema documentation
+- Added user roles documentation
+- Updated API endpoints documentation
+- Updated frontend routes documentation
+- Added v1.1.0 badge to README
+
 ## [1.0.0] - 2025-12-12
 
 ### Added

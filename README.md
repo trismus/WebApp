@@ -2,19 +2,36 @@
 
 [![CI Pipeline](https://github.com/trismus/WebApp/workflows/CI%20Pipeline/badge.svg)](https://github.com/trismus/WebApp/actions)
 [![CD Pipeline](https://github.com/trismus/WebApp/workflows/CD%20Pipeline/badge.svg)](https://github.com/trismus/WebApp/actions)
+[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/trismus/WebApp/releases)
 
-A modern full-stack web application built with React, Node.js, PostgreSQL, and Docker with automated CI/CD pipeline.
+A modern full-stack web application built with React, Node.js, PostgreSQL, and Docker with automated CI/CD pipeline and comprehensive user management system.
 
 ## Features
 
+### Core Features
 - **User Authentication**: JWT-based authentication with secure password hashing
+- **Role-Based Access Control**: Hierarchical 3-tier role system (Administrator > Operator > User)
+- **Interactive Dashboard**: Real-time statistics and quick actions
 - **REST API**: Full-featured backend API with Express.js
-- **Database**: PostgreSQL database with proper schema design
+- **Database**: PostgreSQL database with proper schema design and materialized views
 - **Responsive UI**: Modern, responsive frontend built with React
 - **Docker Ready**: Complete Docker setup for easy deployment
 - **CI/CD Pipeline**: Automated testing, building, and deployment with GitHub Actions
 - **Production Ready**: Nginx reverse proxy, SSL support, and health checks
 - **Landing Page**: Beautiful landing page with feature showcase
+
+### User Management System (v1.1.0)
+- **Three-Tier Role System**:
+  - **Administrator**: Full system access, user management, system settings, all analytics
+  - **Operator**: Monitoring & reports, view all activity logs, analytics overview
+  - **User**: Basic access, personal profile, own activity logs, personal analytics
+- **User Settings**: Theme selection, notifications, language preferences, timezone
+- **Activity Tracking**: Complete audit log of all user actions with IP tracking
+- **Analytics Dashboard**:
+  - Personal analytics with login history and activity trends
+  - Operator overview with active user metrics
+  - System-wide analytics for administrators
+- **Profile Management**: User profiles with role badges and activity statistics
 
 ## Tech Stack
 
@@ -76,13 +93,25 @@ This will build and start all containers:
 ### First Run
 
 The database will be automatically initialized with:
-- Users table with proper schema
-- Indexes for performance
-- Test user accounts (optional to use):
-  - Email: `test@example.com` / Password: `password123`
-  - Email: `demo@example.com` / Password: `password123`
+- Users table with role-based access control
+- Activity logs, user settings, and analytics tables
+- Materialized views for performance
+- Indexes for optimal query performance
+- First registered user automatically becomes Administrator
 
 **Note**: Database files are stored in `./PostgreData/data/` for easy backup and portability.
+
+### Test User Account
+
+After installation, create a test admin account:
+
+```bash
+curl -X POST http://localhost/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Admin User","email":"admin@example.com","password":"SecurePass123"}'
+```
+
+The first registered user will automatically be assigned the **Administrator** role.
 
 ## Usage
 
@@ -117,13 +146,26 @@ npm run clean
 All API requests are proxied through Nginx and accessible via `/api/*`
 
 #### Public Endpoints
-- `GET /` - API information
 - `GET /api/health` - Health check
 - `POST /api/auth/register` - Register new user
 - `POST /api/auth/login` - Login user
 
-#### Protected Endpoints
-- `GET /api/auth/me` - Get current user (requires JWT token)
+#### Protected Endpoints (Authenticated Users)
+- `GET /api/auth/me` - Get current user information
+- `GET /api/settings` - Get user settings
+- `PUT /api/settings` - Update user settings
+- `GET /api/activity/me` - Get personal activity logs
+- `GET /api/activity/stats` - Get activity statistics
+- `GET /api/analytics/me` - Get personal analytics
+
+#### Operator/Admin Endpoints
+- `GET /api/activity/all` - Get all user activity logs (Operator+)
+- `GET /api/analytics/operator` - Get operator analytics overview (Operator+)
+
+#### Administrator Endpoints
+- `GET /api/settings/system` - Get system settings (Admin only)
+- `GET /api/analytics/system` - Get system-wide analytics (Admin only)
+- `POST /api/analytics/refresh` - Refresh analytics data (Admin only)
 
 ### Frontend Routes
 
@@ -131,6 +173,9 @@ All API requests are proxied through Nginx and accessible via `/api/*`
 - `/login` - Login page
 - `/register` - Registration page
 - `/dashboard` - User dashboard (protected)
+- `/settings` - User settings and preferences (protected)
+- `/activity` - Activity logs and tracking (protected)
+- `/analytics` - Analytics and insights (protected)
 
 ## Project Structure
 
@@ -160,7 +205,8 @@ BaseWebApp/
 │   └── package.json
 ├── database/
 │   └── init/
-│       └── 01-init.sql     # Database initialization
+│       ├── 01-init.sql     # Database initialization
+│       └── 02-add-roles-and-features.sql  # User roles and features
 ├── nginx/
 │   ├── nginx.dev.conf      # Nginx config for development
 │   ├── nginx.conf          # Nginx config for production
@@ -190,6 +236,48 @@ Connect to PostgreSQL:
 ```bash
 docker exec -it webapp_postgres psql -U webapp_user -d webapp_db
 ```
+
+### Database Schema
+
+The application uses a comprehensive PostgreSQL schema:
+
+**Core Tables:**
+- `users` - User accounts with role-based access control
+- `user_settings` - User preferences (theme, language, notifications, timezone)
+- `activity_logs` - Complete audit trail of user actions with IP tracking
+- `analytics_events` - Event tracking for analytics
+
+**Views:**
+- `user_analytics_summary` - Materialized view for fast analytics queries
+
+**Key Features:**
+- Automatic timestamp updates
+- Cascading deletes for data integrity
+- Optimized indexes for performance
+- Role-based constraints (administrator, operator, user)
+
+## User Roles
+
+### Administrator
+- Full system access
+- User management capabilities
+- View and edit system settings
+- Access to all analytics data
+- Can view all user activities
+
+### Operator
+- Monitoring and reporting access
+- View all activity logs
+- Access to operator analytics
+- Read-only system overview
+- Cannot modify system settings
+
+### User
+- Basic application access
+- Personal profile management
+- Own activity history
+- Personal analytics only
+- Customizable user settings
 
 ## API Testing
 

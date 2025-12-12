@@ -34,11 +34,18 @@ const register = async (req, res) => {
 
     // Create user
     const result = await db.query(
-      'INSERT INTO users (email, password, name) VALUES ($1, $2, $3) RETURNING id, email, name, created_at',
+      'INSERT INTO users (email, password, name) VALUES ($1, $2, $3) RETURNING id, email, name, role, created_at',
       [email, hashedPassword, name]
     );
 
     const user = result.rows[0];
+
+    // Create default user settings
+    await db.query(
+      'INSERT INTO user_settings (user_id) VALUES ($1)',
+      [user.id]
+    );
+
     const token = generateToken(user.id);
 
     res.status(201).json({
@@ -46,6 +53,7 @@ const register = async (req, res) => {
         id: user.id,
         email: user.email,
         name: user.name,
+        role: user.role,
         createdAt: user.created_at
       },
       token
@@ -91,6 +99,7 @@ const login = async (req, res) => {
         id: user.id,
         email: user.email,
         name: user.name,
+        role: user.role,
         createdAt: user.created_at
       },
       token
@@ -104,7 +113,7 @@ const login = async (req, res) => {
 const getMe = async (req, res) => {
   try {
     const result = await db.query(
-      'SELECT id, email, name, created_at FROM users WHERE id = $1',
+      'SELECT id, email, name, role, created_at FROM users WHERE id = $1',
       [req.user.userId]
     );
 
